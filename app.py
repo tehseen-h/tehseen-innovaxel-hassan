@@ -110,3 +110,16 @@ def update_url(short_code):
         return jsonify({'message': 'URL updated successfully'}), 200
     else:
         return jsonify({'error': 'Short URL not found'}), 404
+
+
+@app.route('/delete/<string:short_code>', methods=['DELETE'])
+def delete_url(short_code):
+    url_entry = URL.query.filter_by(short_code=short_code).first()
+
+    if url_entry:
+        db.session.delete(url_entry)
+        db.session.commit()
+        return jsonify({'message': 'Short URL deleted successfully'}), 200
+    else:
+        return jsonify({'error': 'Short URL not found'}), 404
+
