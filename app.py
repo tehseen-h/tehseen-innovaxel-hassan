@@ -122,4 +122,8 @@ def delete_url(short_code):
         return jsonify({'message': 'Short URL deleted successfully'}), 200
     else:
         return jsonify({'error': 'Short URL not found'}), 404
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Creates the table(s)
+    app.run(debug=True)
 
