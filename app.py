@@ -77,3 +77,18 @@ def redirect_to_original(short_code):
     else:
         return jsonify({'error': 'Short URL not found'}), 404
 
+@app.route('/info/<string:short_code>', methods=['GET'])
+def get_url_info(short_code):
+    url_entry = URL.query.filter_by(short_code=short_code).first()
+
+    if url_entry:
+        return jsonify({
+            'original_url': url_entry.original_url,
+            'short_code': url_entry.short_code,
+            'created_at': url_entry.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'updated_at': url_entry.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'access_count': url_entry.access_count
+        }), 200
+    else:
+        return jsonify({'error': 'Short URL not found'}), 404
+
