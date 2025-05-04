@@ -22,3 +22,7 @@ class URL(db.Model):
 
     def __repr__(self):
         return f"<URL {self.short_code}>"
+
+@app.route('/')
+def home():
+    return 'Database is set up and running!'
