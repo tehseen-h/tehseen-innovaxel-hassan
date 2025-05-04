@@ -33,3 +33,32 @@ import string, random
 def generate_short_code(length=6):
     characters = string.ascii_letters + string.digits  # a-zA-Z0-9
     return ''.join(random.choices(characters, k=length))
+
+
+from flask import request, jsonify
+
+# API to shorten a long URL
+@app.route('/shorten', methods=['POST'])
+def shorten_url():
+    data = request.get_json()  # Get the JSON body
+    original_url = data.get('original_url')  # Get "original_url" from JSON
+
+    if not original_url:
+        return jsonify({'error': 'original_url is required'}), 400
+
+    short_code = generate_short_code()
+    
+    # Check if short_code already exists. If it does, generate again.
+    while URL.query.filter_by(short_code=short_code).first() is not None:
+        short_code = generate_short_code()
+
+    # Save to database
+    new_url = URL(original_url=original_url, short_code=short_code)
+    db.session.add(new_url)
+    db.session.commit()
+
+    return jsonify({
+        'original_url': original_url,
+        'short_code': short_code
+    }), 201
+
