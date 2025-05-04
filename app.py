@@ -26,3 +26,10 @@ class URL(db.Model):
 @app.route('/')
 def home():
     return 'Database is set up and running!'
+
+import string, random
+
+# Function to create a random short code
+def generate_short_code(length=6):
+    characters = string.ascii_letters + string.digits  # a-zA-Z0-9
+    return ''.join(random.choices(characters, k=length))
