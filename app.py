@@ -92,3 +92,21 @@ def get_url_info(short_code):
     else:
         return jsonify({'error': 'Short URL not found'}), 404
 
+@app.route('/update/<string:short_code>', methods=['PUT'])
+def update_url(short_code):
+    url_entry = URL.query.filter_by(short_code=short_code).first()
+
+    if url_entry:
+        data = request.get_json()
+        new_url = data.get('original_url')
+
+        if not new_url:
+            return jsonify({'error': 'New URL is required'}), 400
+
+        url_entry.original_url = new_url
+        url_entry.updated_at = datetime.utcnow()
+        db.session.commit()
+
+        return jsonify({'message': 'URL updated successfully'}), 200
+    else:
+        return jsonify({'error': 'Short URL not found'}), 404
