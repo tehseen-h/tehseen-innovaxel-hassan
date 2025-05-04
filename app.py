@@ -62,3 +62,18 @@ def shorten_url():
         'short_code': short_code
     }), 201
 
+from flask import redirect
+
+@app.route('/<string:short_code>', methods=['GET'])
+def redirect_to_original(short_code):
+    # Search for short code in the database
+    url_entry = URL.query.filter_by(short_code=short_code).first()
+
+    if url_entry:
+        # Increase access count
+        url_entry.access_count += 1
+        db.session.commit()
+        return redirect(url_entry.original_url)
+    else:
+        return jsonify({'error': 'Short URL not found'}), 404
+
